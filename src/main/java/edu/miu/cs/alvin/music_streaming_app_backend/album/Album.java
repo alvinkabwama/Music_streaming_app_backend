@@ -1,6 +1,6 @@
 package edu.miu.cs.alvin.music_streaming_app_backend.album;
 
-import edu.miu.cs.alvin.music_streaming_app_backend.artist.Artist;
+import edu.miu.cs.alvin.music_streaming_app_backend.client.Artist;
 import edu.miu.cs.alvin.music_streaming_app_backend.song.Song;
 import jakarta.persistence.*;
 
@@ -11,7 +11,12 @@ import java.util.List;
 public class Album {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @Version
+    private int version;
+
     private String title;
     private String genre;
     private String releaseDate;

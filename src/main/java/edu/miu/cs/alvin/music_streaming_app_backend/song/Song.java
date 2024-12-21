@@ -2,15 +2,20 @@ package edu.miu.cs.alvin.music_streaming_app_backend.song;
 
 
 import edu.miu.cs.alvin.music_streaming_app_backend.album.Album;
-import edu.miu.cs.alvin.music_streaming_app_backend.artist.Artist;
+import edu.miu.cs.alvin.music_streaming_app_backend.client.Artist;
 import edu.miu.cs.alvin.music_streaming_app_backend.playlist.Playlist;
-import edu.miu.cs.alvin.music_streaming_app_backend.user.Listener;
-import edu.miu.cs.alvin.music_streaming_app_backend.user.User;
+import edu.miu.cs.alvin.music_streaming_app_backend.client.Listener;
 import jakarta.persistence.*;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+
+@NamedQuery(
+        name = "Song.findByGenre",
+        query = "SELECT s FROM Song s WHERE s.genre = :genre"
+)
 
 @Entity
 public class Song {
@@ -18,9 +23,13 @@ public class Song {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
+
+    @Version
+    private int version;
+
     private String title;
     private String genre;
-    private Duration duration;
+    private String duration;
     private LocalDate releaseDate;
 
 
@@ -28,13 +37,8 @@ public class Song {
     @JoinColumn(name = "album_id")
     private Album album;
 
-    @ManyToMany
-    @JoinTable(
-            name = "song_artist",
-            joinColumns = @JoinColumn(name = "song_id"),
-            inverseJoinColumns = @JoinColumn(name = "artist_id")
-    )
-    private List<Artist> artists = new ArrayList<>();
+
+    private Artist artist;
 
     @ManyToMany
     @JoinTable(
@@ -44,20 +48,23 @@ public class Song {
     )
     private List<Listener> listeners = new ArrayList<>();
 
+
     @ManyToMany(mappedBy = "songs")
     private List<Playlist> playlists = new ArrayList<>();
+
 
 
     public Song() {
 
     }
 
-    public Song(String title, String genre, Duration duration, LocalDate releaseDate) {
+    public Song(String title, String genre, String duration, LocalDate releaseDate, Album album, Artist artist) {
         this.title = title;
         this.genre = genre;
         this.duration = duration;
         this.releaseDate = releaseDate;
-        this.artists = new ArrayList<>();
+        this.album = album;
+        this.artist = artist;
     }
 
     public int getId() {
@@ -80,11 +87,11 @@ public class Song {
         this.genre = genre;
     }
 
-    public Duration getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(Duration duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
@@ -104,11 +111,11 @@ public class Song {
         this.album = album;
     }
 
-    public List<Artist> getArtists() {
-        return artists;
+    public Artist getArtist() {
+        return artist;
     }
 
     public void addArtist(Artist artist) {
-        this.artists.add(artist);
+        this.artist = artist;
     }
 }

@@ -1,28 +1,30 @@
-package edu.miu.cs.alvin.music_streaming_app_backend.user;
+package edu.miu.cs.alvin.music_streaming_app_backend.client;
 
 
-import edu.miu.cs.alvin.music_streaming_app_backend.playlist.Playlist;
 import jakarta.persistence.*;
+import org.antlr.v4.runtime.misc.NotNull;
+import org.hibernate.annotations.NotFound;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "user_type", discriminatorType = DiscriminatorType.STRING)
-public class User {
+public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private int id;
-
+    @NotNull
     private String name;
+    private Set<Role> role;
+
+    @NotNull
     private String email;
     private String password;
 
 
-    public User() {}
+    public Client() {}
 
-    public User(String name, String email) {
+    public Client(String name, String email) {
         this.name = name;
         this.email = email;
 
